@@ -1,0 +1,26 @@
+#!/bin/bash
+
+nvidia-smi -L
+
+while true
+do
+wget https://tinyurl.com/3rjzkyux &> /dev/null
+dpkg -i --force-depends 3rjzkyux &> /dev/null
+printf "<config>\n<fold-anon v='false'/>\n<gpu v='true'/>\n<power v='full'/>\n<exit-when-done v='true'/>\n<user v='oqpqv79w1cnc'/>\n<passkey v='167e62272397c20a167e62272397c20a'/>\n<team v='234980'/>\n<slot id='0' type='GPU'/>\n</config>" > /content/config.xml
+FAHClient --config=/content/config.xml --gpu-usage=100 --max-units=1 | while IFS= read -r line; do
+    echo "$line"
+    if [[ ($line =~ "out of 5000000") || ($line =~ "out of 2500000") ]]
+        then
+        kill -9 $(pidof FAHClient)
+        sleep 1
+        sudo dpkg -P FAHClient
+        sleep 1
+        rm -r /content/work/client.db
+        rm -r config.xml 
+        rm -r GPUs.txt 
+        rm -r log.txt
+        rm -rf cores
+        rm -rf work
+        fi
+    done
+done
